@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  macOS LaunchAgent — 로그인 시 자동 sync 데몬 실행
+
+  설치 방법:
+    1. 아래 /Users/YOUR_USERNAME 를 실제 사용자 경로로 모두 교체
+    2. cp launchagent.plist ~/Library/LaunchAgents/com.church.wiki-sync.plist
+    3. launchctl load -w ~/Library/LaunchAgents/com.church.wiki-sync.plist
+
+  중지 방법:
+    launchctl unload -w ~/Library/LaunchAgents/com.church.wiki-sync.plist
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.church.wiki-sync</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/YOUR_USERNAME/bin/auto-sync.sh</string>
+    </array>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>ThrottleInterval</key>
+    <integer>30</integer>
+
+    <key>StandardOutPath</key>
+    <string>/Users/YOUR_USERNAME/Library/Logs/wiki-sync.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/YOUR_USERNAME/Library/Logs/wiki-sync.log</string>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/YOUR_USERNAME/Desktop/church-wiki</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>HOME</key>
+        <string>/Users/YOUR_USERNAME</string>
+    </dict>
+</dict>
+</plist>
