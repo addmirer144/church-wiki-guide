@@ -1,5 +1,15 @@
 # 교회 내부 위키 구축 가이드
 
+> ## 📦 이 저장소는 통합되었습니다
+> 이 배포 가이드는 **[church-wiki-starter](https://github.com/addmirer144/church-wiki-starter)** 의 **`deploy/`** 폴더로 이전됐습니다.
+> 이제 볼트(지식)와 배포가 **한 저장소**에 함께 있습니다 — 하나만 받으면 됩니다.
+>
+> → **[church-wiki-starter/deploy](https://github.com/addmirer144/church-wiki-starter/tree/main/deploy)** 를 이용하세요.
+>
+> (이 저장소는 보존을 위해 읽기 전용으로 아카이브되었습니다.)
+
+---
+
 Obsidian으로 작성한 교회 문서를 **비밀번호로 보호된 내부 웹사이트**로 자동 배포하는 시스템입니다.  
 [Quartz v4](https://quartz.jzhao.xyz/) + [Vercel](https://vercel.com) 기반으로 구성하며, 모든 과정은 Claude(AI)의 도움을 받아 구현했습니다.
 
