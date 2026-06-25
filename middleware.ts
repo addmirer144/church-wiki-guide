@@ -1,15 +1,18 @@
-// 선린교회 위키 - Vercel Edge 비밀번호 게이트
-// 필요 환경변수: SITE_PASSWORD (Vercel 프로젝트 Environment Variables)
+// 교회 위키 - Vercel Edge 비밀번호 게이트
+// 필요 환경변수:
+//   SITE_PASSWORD (필수) - 접속 비밀번호
+//   SITE_NAME     (선택) - 로그인 화면에 표시할 교회/위키 이름 (기본: "교회 위키")
 
 export const config = {
   matcher: "/((?!_vercel/).*)",
 }
 
-const COOKIE = "sunrin_auth"
+const COOKIE = "wiki_auth"
 const MAX_AGE = 60 * 60 * 24 * 30 // 30일
+const SITE_NAME = process.env.SITE_NAME || "교회 위키"
 
 async function token(pw: string): Promise<string> {
-  const data = new TextEncoder().encode(`${pw}::sunrin-wiki::v1`)
+  const data = new TextEncoder().encode(`${pw}::church-wiki::v1`)
   const hash = await crypto.subtle.digest("SHA-256", data)
   return Array.from(new Uint8Array(hash))
     .map((b) => b.toString(16).padStart(2, "0"))
@@ -105,7 +108,7 @@ function loginPage(redirect: string, failed: boolean): string {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>선린교회 위키</title>
+<title>${escapeAttr(SITE_NAME)}</title>
 <style>
   :root { color-scheme: light dark; }
   html, body { margin: 0; padding: 0; height: 100%; font-family: "Noto Sans KR", -apple-system, system-ui, sans-serif; }
@@ -145,7 +148,7 @@ function loginPage(redirect: string, failed: boolean): string {
 </head>
 <body>
   <div class="card">
-    <h1>선린교회 위키</h1>
+    <h1>${escapeAttr(SITE_NAME)}</h1>
     <p class="sub">열람하려면 비밀번호를 입력하세요.</p>
     <form method="POST" action="/__login">
       <input type="hidden" name="redirect" value="${safe}">

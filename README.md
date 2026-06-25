@@ -6,6 +6,12 @@ Obsidian으로 작성한 교회 문서를 **비밀번호로 보호된 내부 웹
 > 선린교회에서 실제로 운영 중인 시스템을 템플릿으로 정리했습니다.  
 > 경로·비밀번호 등 `YOUR_USERNAME` 표시 부분을 본인 환경에 맞게 수정해 사용하세요.
 
+> **두 키트는 한 쌍입니다.**
+> - 지식/볼트 → **[church-wiki-starter](https://github.com/addmirer144/church-wiki-starter)** (먼저 이걸로 회의록·자료를 쌓는다)
+> - 웹 배포 → **이 저장소(church-wiki-guide)** (준비되면 비밀번호 웹사이트로 공유)
+>
+> 순서: 스타터 키트로 볼트를 만들어 한동안 기록을 쌓은 뒤, 공유가 필요해지면 이 가이드로 배포한다.
+
 ---
 
 ## 어떤 시스템인가
@@ -122,8 +128,10 @@ Vercel 대시보드 → 프로젝트 → **Settings → Environment Variables**
 | 이름 | 값 | 환경 |
 |------|-----|------|
 | `SITE_PASSWORD` | 원하는 비밀번호 | Production |
+| `SITE_NAME` | 로그인 화면에 표시할 이름 (예: `○○교회 위키`). 생략 시 "교회 위키" | Production |
 
 > 비밀번호를 바꾸면 기존 로그인 쿠키가 자동으로 무효화됩니다(SHA-256 기반 토큰이므로).
+> `SITE_NAME`만 바꾸면 코드 수정 없이 로그인 화면의 교회 이름이 바뀝니다.
 
 ---
 
@@ -293,15 +301,32 @@ cd ~/Desktop/sunrin-wiki && ./sync-vault.sh
 
 ---
 
+## Windows에서는
+
+위 6단계 중 **1~4단계(Quartz·GitHub·Vercel·비밀번호 게이트)는 Windows에서도 동일**합니다. 차이는 5~6단계(bash 스크립트·자동화)뿐입니다.
+
+| 단계 | macOS | Windows |
+|------|-------|---------|
+| Quartz·GitHub·Vercel·middleware | 동일 | **동일** |
+| `sync-vault.sh`(5단계) | bash로 바로 실행 | **Git Bash 또는 WSL**에서 실행 (둘 다 무료) |
+| 자동 동기화(6단계) | fswatch + LaunchAgent | 맥 전용 → Windows는 **수동 동기화**로 대체 (아래) |
+
+**Windows 권장 운영:** 자동화(6단계)는 건너뛰고, 문서를 고친 뒤 Git Bash에서 `bash scripts/sync-vault.sh` 한 줄을 직접 실행한다. 또는 작업 스케줄러로 주기 실행을 걸 수 있다.
+
+> 참고: 맥과 윈도우를 git으로 함께 쓰면 한글 파일명(NFD/NFC) 차이로 링크가 깨져 보일 수 있다. 한 교회는 한 OS로 통일하는 것을 권장한다.
+
+---
+
 ## 운영 요약
 
 | 상황 | 방법 |
 |------|------|
-| 문서 작성/수정 | Obsidian에서 저장하면 5분 내 자동 배포 |
-| 즉시 배포 필요 | `cd sunrin-wiki && ./sync-vault.sh` |
+| 문서 작성/수정 | Obsidian에서 저장하면 5분 내 자동 배포 (macOS) / Windows는 수동 동기화 |
+| 즉시 배포 필요 | `cd <위키폴더> && ./scripts/sync-vault.sh` (Windows는 Git Bash) |
 | 비밀번호 변경 | Vercel 환경변수 `SITE_PASSWORD` 수정 후 재배포 |
-| 로그 확인 | `tail -f ~/Library/Logs/sunrin-sync.log` |
-| 자동 sync 일시 중지 | `launchctl unload -w ~/Library/LaunchAgents/com.addmirer.sunrin-sync.plist` |
+| 교회 이름 변경 | Vercel 환경변수 `SITE_NAME` 수정 후 재배포 |
+| 로그 확인(macOS) | `tail -f ~/Library/Logs/<위키>-sync.log` |
+| 자동 sync 일시 중지(macOS) | `launchctl unload -w ~/Library/LaunchAgents/<your>.plist` |
 
 ---
 
